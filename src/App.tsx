@@ -18,7 +18,11 @@ import {
   Zap,
   Info,
   Beaker,
-  Dna
+  Dna,
+  TrendingUp,
+  Clock,
+  Star,
+  Shield
 } from 'lucide-react';
 
 // Define strict typing for Hospital Records
@@ -26,6 +30,19 @@ interface SchemeInfo {
   name: string;
   amount: string;
   org: string; // Government body e.g. "Govt of India" or "State NY"
+}
+
+interface ServiceMetric {
+  name: string;
+  category: string;
+  successRate: number; // percentage (e.g. 96.8)
+  basePrice: string; // cost without scheme
+  subsidyAmount: string; // direct scheme deduction
+  netPrice: string; // client out-of-pocket
+  annualProcedures: number; // clinical volume info
+  waitingDays: number; // average wait listing
+  satisfactionRate: number; // client positive rating
+  schemeUsed: string; // qualifying government scheme name
 }
 
 interface HospitalRecord {
@@ -36,9 +53,10 @@ interface HospitalRecord {
   healthIssues: string[]; // split into array for cleaner matching
   supportedSchemes: SchemeInfo[];
   availableLabs: string[]; // Associated diagnosis and pathology laboratories
+  services: ServiceMetric[]; // clinical success rates & pricings dashboard source
 }
 
-// Solid built-in database with expanded Indian & International government health schemes, now containing HIV/AIDS & Labs
+// Built-in database of Indian & International hospitals with expanded government health schemes, clinical lab directories, and service dashboards
 const HEALTH_DIRECTORY: HospitalRecord[] = [
   {
     id: "tmh-mumbai",
@@ -58,6 +76,56 @@ const HEALTH_DIRECTORY: HospitalRecord[] = [
       "NABL Accredited Tumor Marker & Histology Lab",
       "CD4/CD8 Immune Monitoring & Flow Cytometry Core",
       "DNA Sequencing & Molecular Oncology Unit"
+    ],
+    services: [
+      {
+        name: "Antiretroviral ART Program",
+        category: "HIV / AIDS Treatment",
+        successRate: 98.4,
+        basePrice: "₹8,500 / mo",
+        subsidyAmount: "₹8,500 / mo",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 4800,
+        waitingDays: 1,
+        satisfactionRate: 99,
+        schemeUsed: "National AIDS Control Programme (NACP)"
+      },
+      {
+        name: "Chemotherapy Cycle",
+        category: "Oncology Care",
+        successRate: 85.2,
+        basePrice: "₹45,000 / cycle",
+        subsidyAmount: "₹45,000 / cycle",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 12400,
+        waitingDays: 5,
+        satisfactionRate: 94,
+        schemeUsed: "Ayushman Bharat (PM-JAY)"
+      },
+      {
+        name: "Intensity Radiotherapy (IMRT)",
+        category: "Radiation Oncology",
+        successRate: 89.6,
+        basePrice: "₹1,80,000",
+        subsidyAmount: "₹1,50,000 Scheme limit",
+        netPrice: "₹30,000 Out-of-pocket",
+        annualProcedures: 3200,
+        waitingDays: 14,
+        satisfactionRate: 92,
+        schemeUsed: "MJPJAY Maharashtra Scheme"
+      },
+      {
+        name: "Malignant Hematology Trial",
+        category: "Leukemia/Lymphoma Care",
+        successRate: 91.1,
+        basePrice: "₹2,50,000",
+        subsidyAmount: "₹2,00,000 Grant",
+        netPrice: "₹50,000 Out-of-pocket",
+        annualProcedures: 1850,
+        waitingDays: 7,
+        satisfactionRate: 95,
+        schemeUsed: "Tata Trust Patients Fund"
+      }
     ]
   },
   {
@@ -76,6 +144,44 @@ const HEALTH_DIRECTORY: HospitalRecord[] = [
       "Advanced Pathology Lab & Multiplex Assay Wing",
       "CD4 Count Monitoring Diagnostic Division",
       "High-Resolution MRI & CT Diagnostic Suite"
+    ],
+    services: [
+      {
+        name: "Cardiac Bypass (CABG)",
+        category: "Cardiovascular Surgery",
+        successRate: 97.8,
+        basePrice: "₹3,90,005",
+        subsidyAmount: "₹1,50,000 Support cap",
+        netPrice: "₹2,40,005 Out-of-pocket",
+        annualProcedures: 1100,
+        waitingDays: 6,
+        satisfactionRate: 98,
+        schemeUsed: "MJPJAY Maharashtra / PM-JAY"
+      },
+      {
+        name: "Coronary Angioplasty",
+        category: "Interventional Cardiology",
+        successRate: 99.1,
+        basePrice: "₹1,85,000",
+        subsidyAmount: "₹1,85,000 (100% CGHS)",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 2350,
+        waitingDays: 2,
+        satisfactionRate: 97,
+        schemeUsed: "CGHS (Central Govt Health)"
+      },
+      {
+        name: "Craniotomy Tumor Resection",
+        category: "Neurosurgery Core",
+        successRate: 84.5,
+        basePrice: "₹4,80,000",
+        subsidyAmount: "₹1,50,000 Support cap",
+        netPrice: "₹3,30,000 Out-of-pocket",
+        annualProcedures: 450,
+        waitingDays: 10,
+        satisfactionRate: 91,
+        schemeUsed: "Ayushman Bharat (PM-JAY)"
+      }
     ]
   },
   {
@@ -95,6 +201,44 @@ const HEALTH_DIRECTORY: HospitalRecord[] = [
       "Integrated Counseling & Testing Centre (ICTC)",
       "NCOE Virology Registry Labs",
       "General Clinical Pathology Laboratory"
+    ],
+    services: [
+      {
+        name: "ART Consultation & Support",
+        category: "HIV / AIDS Care",
+        successRate: 97.9,
+        basePrice: "₹5,200",
+        subsidyAmount: "₹5,200 (100% Grant)",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 9200,
+        waitingDays: 1,
+        satisfactionRate: 98,
+        schemeUsed: "National AIDS Control Programme (NACP)"
+      },
+      {
+        name: "Critical Malaria & ICU Therapy",
+        category: "Infectious Diseases",
+        successRate: 96.7,
+        basePrice: "₹65,000 / week",
+        subsidyAmount: "₹65,000 / week",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 5400,
+        waitingDays: 0,
+        satisfactionRate: 93,
+        schemeUsed: "MJPJAY Maharashtra Scheme"
+      },
+      {
+        name: "Pediatric Emergency Resuscitation",
+        category: "Child Health & ICU",
+        successRate: 98.3,
+        basePrice: "₹40,000",
+        subsidyAmount: "₹40,000 (Advisors Fund)",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 3100,
+        waitingDays: 0,
+        satisfactionRate: 97,
+        schemeUsed: "Poor Patients Aid Fund"
+      }
     ]
   },
   {
@@ -112,6 +256,44 @@ const HEALTH_DIRECTORY: HospitalRecord[] = [
       "Fortis Standard Pathology Diagnostics",
       "Rapid HIV ELISA Laboratory Wing",
       "NABL Hematology Lab Core"
+    ],
+    services: [
+      {
+        name: "Total Knee Replacement",
+        category: "Orthopedic Arthroplasty",
+        successRate: 96.2,
+        basePrice: "₹2,60,000",
+        subsidyAmount: "₹1,50,000 Cover",
+        netPrice: "₹1,10,000 Out-of-pocket",
+        annualProcedures: 850,
+        waitingDays: 8,
+        satisfactionRate: 96,
+        schemeUsed: "Ayushman Bharat (PM-JAY)"
+      },
+      {
+        name: "Rapid HIV Viral Screening",
+        category: "Virology Diagnostics",
+        successRate: 99.8,
+        basePrice: "₹1,500",
+        subsidyAmount: "₹1,500 (100% Reimbursement)",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 12000,
+        waitingDays: 1,
+        satisfactionRate: 99,
+        schemeUsed: "National HIV Free Screening Scheme"
+      },
+      {
+        name: "Cardiac Angioplasty Stent",
+        category: "Heart Care Specialty",
+        successRate: 98.6,
+        basePrice: "₹2,10,005",
+        subsidyAmount: "₹1,50,000 Support cap",
+        netPrice: "₹60,005 Out-of-pocket",
+        annualProcedures: 940,
+        waitingDays: 4,
+        satisfactionRate: 95,
+        schemeUsed: "Ayushman Bharat (PM-JAY)"
+      }
     ]
   },
   {
@@ -132,6 +314,44 @@ const HEALTH_DIRECTORY: HospitalRecord[] = [
       "NABL Molecular Microbiology & PCR Assays Lab",
       "Immunology Research Diagnostics Unit",
       "Pediatric Hematology Diagnostics"
+    ],
+    services: [
+      {
+        name: "AIDS Central ART Support Plan",
+        category: "HIV Specialty Care",
+        successRate: 98.1,
+        basePrice: "₹11,000 / mo",
+        subsidyAmount: "₹11,000 / mo",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 8600,
+        waitingDays: 2,
+        satisfactionRate: 97,
+        schemeUsed: "NACP Central Free ART & CD4 Subsidy"
+      },
+      {
+        name: "Oncology Resection Surgery",
+        category: "Surgical Oncology",
+        successRate: 87.9,
+        basePrice: "₹1,95,000",
+        subsidyAmount: "₹1,95,000 (100% Subsidized)",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 4600,
+        waitingDays: 25,
+        satisfactionRate: 95,
+        schemeUsed: "Delhi Arogya Kosh (DAK)"
+      },
+      {
+        name: "Coronary Bypass (CABG)",
+        category: "Cardiothoracic Surgery",
+        successRate: 97.5,
+        basePrice: "₹2,40,000",
+        subsidyAmount: "₹2,40,000 (100% Cover)",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 2300,
+        waitingDays: 30,
+        satisfactionRate: 94,
+        schemeUsed: "Rashtriya Arogya Nidhi (RAN)"
+      }
     ]
   },
   {
@@ -150,6 +370,44 @@ const HEALTH_DIRECTORY: HospitalRecord[] = [
       "Apollo Diagnostics & Wellness Lab Center",
       "Advanced Serology and PCR Laboratory Unit",
       "Clinical Pathology & Biochemistry Core"
+    ],
+    services: [
+      {
+        name: "Orthotopic Heart Transplant",
+        category: "Advanced Cardiothoracic",
+        successRate: 90.1,
+        basePrice: "₹11,50,000",
+        subsidyAmount: "₹5,00,000 Maximum Cap",
+        netPrice: "₹6,50,000 Out-of-pocket",
+        annualProcedures: 120,
+        waitingDays: 90,
+        satisfactionRate: 93,
+        schemeUsed: "CMCHIS TN Govt Scheme"
+      },
+      {
+        name: "Renal Hemodialysis Therapy",
+        category: "Renal Specialty",
+        successRate: 98.2,
+        basePrice: "₹4,200 / session",
+        subsidyAmount: "₹4,200 / session",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 14000,
+        waitingDays: 2,
+        satisfactionRate: 97,
+        schemeUsed: "CMCHIS TN Govt Scheme"
+      },
+      {
+        name: "AIDS / HIV Viral Diagnostic Panel",
+        category: "Clinical Serology",
+        successRate: 99.7,
+        basePrice: "₹3,400",
+        subsidyAmount: "₹3,400 (Welfare pool)",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 6500,
+        waitingDays: 1,
+        satisfactionRate: 98,
+        schemeUsed: "NACP Cashless HIV Treatment Support"
+      }
     ]
   },
   {
@@ -168,6 +426,44 @@ const HEALTH_DIRECTORY: HospitalRecord[] = [
       "Onco-Pathology & Lymphoma Research Diagnostic Lab",
       "Special Clinical Virology Assays Unit",
       "DNA Sequencing & Cytogenetics Lab Services"
+    ],
+    services: [
+      {
+        name: "Pediatric Lymphoma Chemotherapy",
+        category: "Pediatric Oncology",
+        successRate: 88.4,
+        basePrice: "₹2,20,000",
+        subsidyAmount: "₹2,20,000 (100% Covered)",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 1500,
+        waitingDays: 5,
+        satisfactionRate: 96,
+        schemeUsed: "CMCHIS Special Cancer Cover"
+      },
+      {
+        name: "Tumor Resection Surgery",
+        category: "Surgical Oncology",
+        successRate: 92.5,
+        basePrice: "₹3,10,000",
+        subsidyAmount: "₹3,10,000 (Full Subsidy)",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 4200,
+        waitingDays: 10,
+        satisfactionRate: 95,
+        schemeUsed: "Cancer Relief Fund TN"
+      },
+      {
+        name: "HIV Associated Sarcoma Management",
+        category: "Co-Infection Treatment",
+        successRate: 86.1,
+        basePrice: "₹2,50,000",
+        subsidyAmount: "₹2,50,000 (Dual Cover)",
+        netPrice: "₹0 (Cashless)",
+        annualProcedures: 780,
+        waitingDays: 7,
+        satisfactionRate: 92,
+        schemeUsed: "Central AIDS Support & Diagnostic Waiver"
+      }
     ]
   },
   {
@@ -186,6 +482,44 @@ const HEALTH_DIRECTORY: HospitalRecord[] = [
       "Mount Sinai Clinical Virology Lab & PCR Testing Wing",
       "NYS Certified Immune Assessment Center",
       "Biomedical Pathology and Genotyping Core"
+    ],
+    services: [
+      {
+        name: "Antiviral HIV Management",
+        category: "Infectious Disease / AIDS",
+        successRate: 99.2,
+        basePrice: "$3,300 / mo",
+        subsidyAmount: "$3,300 / mo (100% Federal)",
+        netPrice: "$0 (Cashless)",
+        annualProcedures: 2900,
+        waitingDays: 1,
+        satisfactionRate: 98,
+        schemeUsed: "Ryan White HIV/AIDS Treatment Program"
+      },
+      {
+        name: "Cardiac Bypass Resection",
+        category: "Cardiothoracic Care",
+        successRate: 98.4,
+        basePrice: "$85,000",
+        subsidyAmount: "80% Cover ($68,000)",
+        netPrice: "$17,000 Out-of-pocket",
+        annualProcedures: 780,
+        waitingDays: 15,
+        satisfactionRate: 96,
+        schemeUsed: "Federal Medicare Program"
+      },
+      {
+        name: "PrEP Prevention Protocol",
+        category: "Clinical Prophylaxis",
+        successRate: 99.9,
+        basePrice: "$450 / mo",
+        subsidyAmount: "$450 / mo (State Medicaid)",
+        netPrice: "$0 (Cashless)",
+        annualProcedures: 11000,
+        waitingDays: 1,
+        satisfactionRate: 99,
+        schemeUsed: "New York State Medicaid"
+      }
     ]
   },
   {
@@ -204,6 +538,44 @@ const HEALTH_DIRECTORY: HospitalRecord[] = [
       "MSK Immuno-Oncology & Histopathology Testing Core",
       "Molecular Diagnostics Advanced Pathology Lab",
       "AIDS Malignancy Center Diagnosis Wing"
+    ],
+    services: [
+      {
+        name: "CAR-T Cell Immunotherapy",
+        category: "Advanced Oncology Therapy",
+        successRate: 88.1,
+        basePrice: "$375,000",
+        subsidyAmount: "Sliding Scale Full Waiver",
+        netPrice: "$0 (Fully Subsidized)",
+        annualProcedures: 320,
+        waitingDays: 12,
+        satisfactionRate: 97,
+        schemeUsed: "MSK Financial Assistance Program"
+      },
+      {
+        name: "Sarcoma Surgical Oncology",
+        category: "Complex Tumor Removal",
+        successRate: 91.3,
+        basePrice: "$140,000",
+        subsidyAmount: "80% authorized ($112,000)",
+        netPrice: "$28,000 Out-of-pocket",
+        annualProcedures: 480,
+        waitingDays: 10,
+        satisfactionRate: 94,
+        schemeUsed: "Federal Medicare Program"
+      },
+      {
+        name: "HIV Sarcoma Specialty Care",
+        category: "Oncology Co-Infection",
+        successRate: 95.8,
+        basePrice: "$5,200",
+        subsidyAmount: "$5,200 (Federal Grant Support)",
+        netPrice: "$0 (Cashless)",
+        annualProcedures: 600,
+        waitingDays: 3,
+        satisfactionRate: 97,
+        schemeUsed: "Ryan White HIV/AIDS Care Grant Help"
+      }
     ]
   }
 ];
@@ -216,6 +588,7 @@ export default function App() {
   // Custom states
   const [isExactMatchOnly, setIsExactMatchOnly] = useState<boolean>(false);
   const [selectedHospital, setSelectedHospital] = useState<HospitalRecord | null>(null);
+  const [selectedServiceIndex, setSelectedServiceIndex] = useState<number>(0);
   const [savedHospitals, setSavedHospitals] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'search' | 'saved' | 'about'>('search');
 
@@ -451,7 +824,10 @@ export default function App() {
                       return (
                         <div 
                           key={hospital.id} 
-                          onClick={() => setSelectedHospital(hospital)}
+                          onClick={() => {
+                            setSelectedHospital(hospital);
+                            setSelectedServiceIndex(0);
+                          }}
                           className="bg-slate-900 border border-slate-800/80 hover:border-teal-500/40 rounded-2xl p-4 transition-all duration-200 cursor-pointer relative group flex flex-col justify-between space-y-3.5 shadow-sm"
                         >
                           {/* Card top banner with save bookmark */}
@@ -597,7 +973,10 @@ export default function App() {
                   {HEALTH_DIRECTORY.filter(h => savedHospitals.includes(h.id)).map((hospital) => (
                     <div 
                       key={hospital.id} 
-                      onClick={() => setSelectedHospital(hospital)}
+                      onClick={() => {
+                        setSelectedHospital(hospital);
+                        setSelectedServiceIndex(0);
+                      }}
                       className="bg-slate-900 border border-slate-800 rounded-2xl p-4 transition-all duration-200 cursor-pointer hover:border-teal-500/40 relative flex flex-col justify-between space-y-3 shadow-md"
                     >
                       <div className="flex justify-between items-start">
@@ -772,6 +1151,214 @@ export default function App() {
                     ))}
                   </div>
                 </div>
+              </div>
+
+              {/* Dynamic Service & Success Rate Dashboard */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between pb-1">
+                  <span className="text-[9px] font-black text-teal-400 tracking-wider uppercase flex items-center gap-1.5">
+                    <TrendingUp className="h-3 w-3 text-teal-400 animate-pulse" /> clinical efficacy & cost dashboard
+                  </span>
+                  <span className="text-[9px] text-slate-500 font-extrabold uppercase">
+                    Tap a program to view metrics
+                  </span>
+                </div>
+
+                {/* Service Selector Buttons */}
+                <div className="grid grid-cols-2 gap-2">
+                  {selectedHospital.services && selectedHospital.services.map((service, idx) => {
+                    const isSelected = selectedServiceIndex === idx;
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedServiceIndex(idx)}
+                        className={`p-2.5 rounded-xl border text-left transition-all duration-200 focus:outline-none flex flex-col justify-between space-y-1.5 relative overflow-hidden ${
+                          isSelected 
+                            ? 'bg-slate-900 border-teal-500/80 shadow-lg shadow-teal-500/5 text-white ring-1 ring-teal-500/20' 
+                            : 'bg-slate-950/80 border-slate-850 hover:bg-slate-900/50 text-slate-400 hover:border-slate-800'
+                        }`}
+                      >
+                        {/* Selector Glow Indicator */}
+                        {isSelected && (
+                          <div className="absolute top-0 right-0 w-8 h-8 bg-teal-500/10 rounded-bl-full pointer-events-none flex items-center justify-center">
+                            <Zap className="h-2.5 w-2.5 text-teal-400 absolute top-1 right-1" />
+                          </div>
+                        )}
+                        
+                        <div>
+                          <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider truncate">
+                            {service.category}
+                          </p>
+                          <h4 className="text-[11px] font-black tracking-tight leading-snug line-clamp-1 mt-0.5">
+                            {service.name}
+                          </h4>
+                        </div>
+
+                        <div className="flex items-center justify-between gap-1 pt-1 border-t border-slate-900 w-full">
+                          <span className="text-[9px] text-slate-400 truncate">
+                            {service.netPrice.includes("₹0") || service.netPrice.includes("$0") ? (
+                              <span className="text-emerald-400 font-extrabold">Free / Cashless</span>
+                            ) : (
+                              <span className="text-teal-400 font-extrabold">{service.netPrice.split(" ")[0]}</span>
+                            )}
+                          </span>
+                          <span className="text-[9.5px] font-black text-white bg-slate-950 px-1 py-0.5 rounded border border-slate-800/80 shrink-0">
+                            {service.successRate}%
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Dashboard Metrics Panel for currently selected service */}
+                {selectedHospital.services && selectedHospital.services[selectedServiceIndex] && (() => {
+                  const s = selectedHospital.services[selectedServiceIndex];
+                  
+                  // Helper for qualitative rating label based on successRate 
+                  let ratingLabel = "Standard Cover";
+                  let ratingColor = "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
+                  if (s.successRate >= 98) {
+                    ratingLabel = "Exceptional Care";
+                    ratingColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
+                  } else if (s.successRate >= 95) {
+                    ratingLabel = "High Efficacy";
+                    ratingColor = "text-teal-400 bg-teal-500/10 border-teal-500/20";
+                  } else if (s.successRate >= 90) {
+                    ratingLabel = "Highly Optimal";
+                    ratingColor = "text-blue-400 bg-blue-500/10 border-blue-500/50";
+                  } else {
+                    ratingLabel = "Specialized Wing";
+                    ratingColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/20";
+                  }
+
+                  return (
+                    <div className="bg-slate-950 border border-teal-500/15 rounded-2xl p-4 space-y-4 shadow-xl relative overflow-hidden">
+                      {/* Ambient background glow */}
+                      <div className="absolute -top-12 -right-12 w-28 h-28 bg-teal-500/5 rounded-full blur-2xl pointer-events-none" />
+                      
+                      {/* Dashboard Title row */}
+                      <div className="flex justify-between items-start gap-2 pb-1 border-b border-slate-900">
+                        <div>
+                          <span className="text-[8px] font-black tracking-widest text-teal-400 uppercase">
+                            Operational Analytics Panel
+                          </span>
+                          <h4 className="text-xs font-bold text-white tracking-snug mt-0.5">
+                            {s.name} ({s.category})
+                          </h4>
+                        </div>
+                        <span className={`text-[8.5px] font-black tracking-wider uppercase px-2 py-0.5 rounded border ${ratingColor}`}>
+                          {ratingLabel}
+                        </span>
+                      </div>
+
+                      {/* KPI Grid */}
+                      <div className="grid grid-cols-2 gap-2.5">
+                        
+                        {/* KPI 1: Success Rate */}
+                        <div className="bg-slate-900 border border-slate-850 rounded-xl p-3 flex flex-col justify-between space-y-2">
+                          <div className="flex justify-between items-center text-[8px] font-bold text-slate-500 uppercase tracking-wider">
+                            <span>Clinical Success Rate</span>
+                            <Award className="h-3 w-3 text-teal-400" />
+                          </div>
+                          
+                          <div className="space-y-1">
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-lg font-black text-white tracking-tight">{s.successRate}%</span>
+                              <span className="text-[8px] text-emerald-400 font-extrabold uppercase">Verified</span>
+                            </div>
+                            
+                            {/* Visual Progress Bar */}
+                            <div className="h-1.5 w-full bg-slate-950 rounded-full overflow-hidden">
+                              <div 
+                                className="h-full bg-gradient-to-r from-teal-500 to-emerald-400 rounded-full transition-all duration-500"
+                                style={{ width: `${s.successRate}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* KPI 2: Cost Breakdowns */}
+                        <div className="bg-slate-900 border border-slate-850 rounded-xl p-3 flex flex-col justify-between space-y-2">
+                          <div className="flex justify-between items-center text-[8px] font-bold text-slate-500 uppercase tracking-wider">
+                            <span>Cost Breakdown</span>
+                            <Shield className="h-3 w-3 text-emerald-400" />
+                          </div>
+
+                          <div className="space-y-1">
+                            <div className="text-[9px] text-slate-450 flex justify-between">
+                              <span className="text-slate-500">Base Cost:</span>
+                              <span className="line-through">{s.basePrice}</span>
+                            </div>
+                            
+                            <div className="text-[9px] text-slate-450 flex justify-between">
+                              <span className="text-slate-500">Subsidy Covered:</span>
+                              <span className="text-teal-400 font-medium">-{s.subsidyAmount.includes("100%") ? "Full Check" : s.subsidyAmount.split(" ")[0]}</span>
+                            </div>
+
+                            <div className="pt-1 border-t border-slate-950 flex items-center justify-between text-[10px]">
+                              <span className="font-extrabold text-white">Net Price:</span>
+                              <span className="text-emerald-400 font-extrabold bg-emerald-500/10 px-1.5 rounded">{s.netPrice}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* KPI 3: Operational Volume & Wait Queue */}
+                        <div className="bg-slate-900 border border-slate-850 rounded-xl p-3 flex flex-col justify-between space-y-2">
+                          <div className="flex justify-between items-center text-[8px] font-bold text-slate-500 uppercase tracking-wider">
+                            <span>Operational Trust</span>
+                            <Activity className="h-3 w-3 text-cyan-400" />
+                          </div>
+
+                          <div className="space-y-0.5">
+                            <p className="text-[12px] font-black text-white">
+                              {s.annualProcedures.toLocaleString()} Cases <span className="text-[8px] text-slate-400 font-bold block">Yearly Volume</span>
+                            </p>
+                            <p className="text-[9px] text-slate-400 mt-1">
+                              Wait queue: <span className="text-cyan-400 font-bold">{s.waitingDays === 0 ? "Immediate Admin" : `${s.waitingDays} Days`}</span>
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* KPI 4: Stars Rating */}
+                        <div className="bg-slate-900 border border-slate-850 rounded-xl p-3 flex flex-col justify-between space-y-2">
+                          <div className="flex justify-between items-center text-[8px] font-bold text-slate-500 uppercase tracking-wider">
+                            <span>Satisfaction Rating</span>
+                            <Star className="h-3 w-3 text-yellow-500" />
+                          </div>
+
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-0.5">
+                              {[1, 2, 3, 4, 5].map((starIdx) => {
+                                const starValue = starIdx * 20; 
+                                return (
+                                  <Star 
+                                    key={starIdx} 
+                                    className="h-2.5 w-2.5" 
+                                    fill={s.satisfactionRate >= starValue ? "#f59e0b" : "none"} 
+                                    stroke={s.satisfactionRate >= starValue ? "#f59e0b" : "#475569"} 
+                                  />
+                                );
+                              })}
+                              <span className="text-[9px] ml-1.5 text-white font-black">{s.satisfactionRate}%</span>
+                            </div>
+                            <p className="text-[8px] text-slate-500 font-bold leading-none mt-1">
+                              Patient survey trust
+                            </p>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      {/* Associated Scheme Name banner */}
+                      <div className="bg-slate-900/60 p-2 border border-slate-850 rounded-xl text-[10px] text-slate-400 flex items-center justify-between gap-2">
+                        <span className="text-[8px] font-black text-teal-400 uppercase tracking-widest shrink-0">Sponsor Cover:</span>
+                        <span className="font-semibold text-white truncate text-right text-[10px]">{s.schemeUsed}</span>
+                      </div>
+                    </div>
+                  );
+                })()}
+
               </div>
 
               {/* Supported Schemes Detailed Ledger with amounts listed exactly */}
