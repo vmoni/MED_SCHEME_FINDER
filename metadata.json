@@ -1,0 +1,6 @@
+{
+  "name": "Hospital & Scheme Locator",
+  "description": "Premium dark clinical phone simulator to find hospitals, their specialties, addresses, and qualifying government/private scheme amount caps.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
