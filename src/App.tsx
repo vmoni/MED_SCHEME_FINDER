@@ -311,38 +311,6 @@ const HEALTH_DIRECTORY: HospitalRecord[] = [
         schemeUsed: "CMCHIS Special Cancer Cover"
       }
     ]
-  },
-  {
-    id: "mount-sinai-ny",
-    hospitalName: "Mount Sinai Hospital",
-    address: "1468 Madison Ave, New York, NY 10029",
-    location: "New York",
-    contact: "+1 212-241-6500",
-    accreditation: "Magnet Recognized Teaching Medical Center & JCI",
-    healthIssues: ["Heart", "Cardiology", "Cardiac Bypass", "Fever", "Pediatrics", "Infectious Disease", "AIDS", "HIV Prevention", "PrEP Support", "Transplant"],
-    supportedSchemes: [
-      { name: "Ryan White HIV/AIDS Treatment Program", amount: "Up to $100,000 comprehensive medicine", org: "US Federal HRSA" },
-      { name: "New York State Medicaid", amount: "100% standard clinical cost cover", org: "State of New York" },
-      { name: "Federal Medicare Program", amount: "80% of authorized ICU/Heart surgery", org: "US Federal System" }
-    ],
-    availableLabs: [
-      "Mount Sinai Clinical Virology Lab & PCR Testing Wing",
-      "NYS Certified Immune Assessment Center"
-    ],
-    services: [
-      {
-        name: "Antiviral HIV Management",
-        category: "Infectious Disease / AIDS",
-        successRate: 99.2,
-        basePrice: "$3,300 / mo",
-        subsidyAmount: "$3,300 / mo (100% Federal)",
-        netPrice: "$0 (Cashless)",
-        annualProcedures: 2900,
-        waitingDays: 1,
-        satisfactionRate: 98,
-        schemeUsed: "Ryan White HIV/AIDS Treatment Program"
-      }
-    ]
   }
 ];
 
@@ -354,7 +322,7 @@ const POPULAR_DISEASES = [
 
 const POPULAR_LOCATIONS = [
   "Chennai", "Mumbai", "Delhi", "Kolkata", "Bengaluru", 
-  "Hyderabad", "New York", "California", "Tamil Nadu", "Maharashtra"
+  "Hyderabad", "Telangana", "Kerala", "Tamil Nadu", "Maharashtra"
 ];
 
 const activeTabLabels = {
@@ -702,7 +670,7 @@ This scheme serves low-income families residing in Tamil Nadu, offering up to **
                   { tag: "🎗️ Oncology (Chennai)", d: "Cancer", l: "Chennai" },
                   { tag: "🛡️ HIV AIDS (Mumbai)", d: "HIV/AIDS", l: "Mumbai" },
                   { tag: "🚨 PMJAY Dialysis", d: "Dialysis", l: "Tamil Nadu" },
-                  { tag: "🇺🇸 Medicaid (NY)", d: "Cardiology", l: "New York" }
+                  { tag: "🩺 Cardiology (Delhi)", d: "Cardiology", l: "Delhi" }
                 ].map((pre, pidx) => (
                   <button
                     key={pidx}
@@ -1229,7 +1197,7 @@ This scheme serves low-income families residing in Tamil Nadu, offering up to **
                   {[
                     { name: "Ayushman Bharat (PM-JAY)", cap: "₹5,00,000 / year", coverage: "100% Cashless secondary & tertiary cover limits for low income families", origin: "Central Indian Gov" },
                     { name: "MJPJAY Special Maharashtra Scheme", cap: "₹1,50,000 - ₹5,00,000", coverage: "Cashless cover on major oncology surgeries and cardiothoracic plans", origin: "Maharashtra State Gov" },
-                    { name: "Ryan White HIV/AIDS Treatment Care", cap: "Up to $100,000", coverage: "Subsidized antiretroviral diagnostic therapies and prevention", origin: "US Federal HRSA" },
+                    { name: "Rashtriya Arogya Nidhi (RAN)", cap: "Up to ₹15,00,000", coverage: "One-time financial assistance for super-specialty treatment at apex government institutes", origin: "Central Indian Gov" },
                     { name: "CMCHIS Regional Tamil Nadu Scheme", cap: "₹5,00,000 / family", coverage: "Special cancer blocks, cardiac transplants, standard cashless caps", origin: "Tamil Nadu State Gov" }
                   ].map((lead, idx) => (
                     <div key={idx} className="bg-slate-950 p-3 rounded-xl border border-slate-855 flex items-start gap-3.5 text-xs">

@@ -16,7 +16,7 @@ export default function EligibilityEngine({ profile, onChange }: EligibilityEngi
   };
 
   const commonStates = [
-    "Maharashtra", "Tamil Nadu", "Delhi", "Karnataka", "West Bengal", "Gujarat", "Uttar Pradesh", "New York", "California", "Texas"
+    "Maharashtra", "Tamil Nadu", "Delhi", "Karnataka", "West Bengal", "Gujarat", "Uttar Pradesh", "Telangana", "Andhra Pradesh", "Kerala"
   ];
 
   return (

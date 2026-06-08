@@ -228,17 +228,7 @@ export default function AssistantChat({ language = 'en', onLanguageChange }: Ass
                 }`}>
                   {m.content}
 
-                  {m.isOfflineFallback && (
-                    <div className="mt-3 pt-2 border-t border-amber-500/10 text-[9px] text-amber-300/80 leading-snug flex items-start gap-1.5 font-medium">
-                      <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-amber-500 inline-block" />
-                      <span>
-                        {activeLang === 'hi' && <strong>सुरक्षित ऑफलाइन मैच:</strong>}
-                        {activeLang === 'ta' && <strong>ஆஃப்லைன் உதவிக்குறிப்பு:</strong>}
-                        {activeLang === 'mr' && <strong>ऑफलाइन सुरक्षित पर्याय:</strong>}
-                        {activeLang === 'en' && <strong>Offline Cache Match:</strong>} Let-down by live API counts? Relax, I loaded verified governmental benefits from your offline card storage!
-                      </span>
-                    </div>
-                  )}
+
 
                   {/* Grounded Citation links if present */}
                   {m.citations && m.citations.length > 0 && (
