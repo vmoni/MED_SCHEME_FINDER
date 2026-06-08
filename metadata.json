@@ -1,6 +1,6 @@
 {
-  "name": "Hospital & Scheme Locator",
-  "description": "Premium dark clinical phone simulator to find hospitals, their specialties, addresses, and qualifying government/private scheme amount caps.",
+  "name": "MedFind Pro",
+  "description": "An AI-powered healthcare scheme discovery and clinical intelligence platform that identifies government welfare programs, treatment package rates, and supportive hospitals.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
