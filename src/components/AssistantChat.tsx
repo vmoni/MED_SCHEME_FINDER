@@ -130,7 +130,20 @@ export default function AssistantChat({ language = 'en', onLanguageChange }: Ass
         body: JSON.stringify({ messages: history, language: activeLang })
       });
 
-      const data = await res.json();
+      let data: any = {};
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        // Check if it's an HTML page or rate-limiter response
+        if (text.includes("<html") || text.includes("<!DOCTYPE")) {
+          throw new Error("Live AI assistant is currently preparing/starting up. Please send your message again in a moment.");
+        } else {
+          throw new Error(text.slice(0, 100) || "The server returned an invalid format.");
+        }
+      }
+
       if (!res.ok) {
         throw new Error(data.error || "Failed to fetch response.");
       }

@@ -436,7 +436,18 @@ This scheme serves low-income families residing in Tamil Nadu, offering up to **
         body: JSON.stringify({ query: `${diseaseSearch} treatment options in ${locationSearch}` })
       });
 
-      const intentDataJson = await intentRes.json();
+      let intentDataJson: any = {};
+      const intentContentType = intentRes.headers.get("content-type");
+      if (intentContentType && intentContentType.includes("application/json")) {
+        intentDataJson = await intentRes.json();
+      } else {
+        const text = await intentRes.text();
+        if (text.includes("<html") || text.includes("<!DOCTYPE")) {
+          throw new Error("The AI backend is currently warming up. Please try again in a few seconds.");
+        } else {
+          throw new Error("Unable to parse intent extraction error response.");
+        }
+      }
       if (!intentRes.ok) throw new Error(intentDataJson.error || "Failed intent parsing.");
 
       const parsedIntent: IntentExtraction = intentDataJson.data;
@@ -457,7 +468,18 @@ This scheme serves low-income families residing in Tamil Nadu, offering up to **
         })
       });
 
-      const searchJson = await searchRes.json();
+      let searchJson: any = {};
+      const searchContentType = searchRes.headers.get("content-type");
+      if (searchContentType && searchContentType.includes("application/json")) {
+        searchJson = await searchRes.json();
+      } else {
+        const text = await searchRes.text();
+        if (text.includes("<html") || text.includes("<!DOCTYPE")) {
+          throw new Error("The search discovery system is processing database routes. Please try again.");
+        } else {
+          throw new Error("Unable to process search discovery response.");
+        }
+      }
       if (!searchRes.ok) throw new Error(searchJson.error || "Failed RAG discovery.");
 
       setRagResult({

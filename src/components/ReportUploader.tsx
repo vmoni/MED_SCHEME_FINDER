@@ -61,7 +61,19 @@ export default function ReportUploader({ onAnalysisComplete }: ReportUploaderPro
           })
         });
 
-        const data = await response.json();
+        let data: any = {};
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        } else {
+          const text = await response.text();
+          if (text.includes("<html") || text.includes("<!DOCTYPE")) {
+            throw new Error("The report analyzer engine is warming up. Please try again in a few seconds.");
+          } else {
+            throw new Error("Unable to process report analysis response.");
+          }
+        }
+
         if (!response.ok) {
           throw new Error(data.error || "Report extraction failed.");
         }

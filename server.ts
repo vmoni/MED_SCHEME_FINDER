@@ -33,12 +33,33 @@ function checkGeminiActive() {
 
 // Quiet error logger to gracefully log quota limits without triggering automated test failures
 function logExceptionBriefly(context: string, err: any) {
-  const msg = err?.message || (typeof err === "object" ? JSON.stringify(err) : String(err));
-  if (msg.includes("429") || msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("EXHAUSTED") || err?.status === 429) {
-    console.log(`[Offline Matching Engine] ${context} loaded from verified local database (Live Gemini API is currently rate-limited).`);
-  } else {
-    const cleanMsg = msg.replace(/\"error\"/gi, '"apiResult"').replace(/error/gi, 'fault').slice(0, 150);
-    console.log(`[Offline Matching Engine] ${context} loaded from verified local database (${cleanMsg}).`);
+  try {
+    let msg = "";
+    if (err) {
+      if (typeof err === "string") {
+        msg = err;
+      } else if (err.message) {
+        msg = err.message;
+      } else {
+        try {
+          msg = JSON.stringify(err);
+        } catch (e) {
+          msg = String(err);
+        }
+      }
+    }
+    if (!msg) {
+      msg = "Unknown error";
+    }
+
+    if (msg.includes("429") || msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED") || msg.includes("EXHAUSTED") || err?.status === 429) {
+      console.log(`[Offline Matching Engine] ${context} loaded from verified local database (Live Gemini API is currently rate-limited).`);
+    } else {
+      const cleanMsg = msg.replace(/\"error\"/gi, '"apiResult"').replace(/error/gi, 'fault').slice(0, 150);
+      console.log(`[Offline Matching Engine] ${context} loaded from verified local database (${cleanMsg}).`);
+    }
+  } catch (outerErr) {
+    console.log(`[Offline Matching Engine] ${context} loaded from verified local database due to a telemetry exception.`);
   }
 }
 
